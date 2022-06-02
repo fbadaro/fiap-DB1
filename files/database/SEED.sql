@@ -6,7 +6,7 @@ BEGIN
 END;
 
 -- Procedure que criar as tabelas do ambiente
-CREATE OR REPLACE PROCEDURE create_tables
+CREATE OR REPLACE PROCEDURE PR_DB1_CREATE_TABLES
 AUTHID CURRENT_USER
 IS
     fabricante VARCHAR(2000) := '
@@ -48,16 +48,28 @@ IS
             PO_VALOR                NUMBER(6,2) NOT NULL,
             TDB1_FABRICANTE_FE_ID   INTEGER NOT NULL,
             CONSTRAINT TDB2_PRODUTO_PK PRIMARY KEY ( PO_ID ),
-            CONSTRAINT TDB2_PRODUTO_TDB1_FABRICANTE_FK FOREIGN KEY 
+            CONSTRAINT TDB2_PRODUTO_TDB1_FABRICANTE FOREIGN KEY 
                 ( TDB1_FABRICANTE_FE_ID ) REFERENCES TDB1_FABRICANTE ( FE_ID )
         )';
+
+    produto_log VARCHAR(2000) := '
+        CREATE TABLE TDB3_LOG(
+            LG_ID_ENTIDADE          INTEGER NOT NULL,
+            LG_NOME_ENTIDADE        VARCHAR(100) NOT NULL,
+            LG_DATA_MODIFICACAO     TIMESTAMP NOT NULL,
+            LG_USUARIO              VARCHAR(100) NOT NULL,
+            LG_ANTES_ALTERACAO      VARCHAR(4000),
+            LG_DEPOIS_ALTERACAO     VARCHAR(4000)
+        )';
+
 BEGIN
     runcommand(fabricante);
     runcommand(produto);
+    runcommand(produto_log);
 END;
 
 -- Procedure que cria as sequences das tabelas e atualizar sequence nas tabelas
-CREATE OR REPLACE PROCEDURE create_sequences
+CREATE OR REPLACE PROCEDURE PR_DB1_CREATE_SEQUENCES
 AUTHID CURRENT_USER
 IS
     fabricante VARCHAR(1000) := '
@@ -85,18 +97,19 @@ BEGIN
 END;
 
 -- Procedure que deleta todas tabelas e sequences
-CREATE OR REPLACE PROCEDURE drop_environment
+CREATE OR REPLACE PROCEDURE PR_DB1_DROP_ENVIRONMENT
 AUTHID CURRENT_USER
 IS
 BEGIN
     runcommand('DROP TABLE TDB2_PRODUTO');
     runcommand('DROP TABLE TDB1_FABRICANTE');
+    runcommand('DROP TABLE TDB3_LOG');
     runcommand('DROP SEQUENCE TDB1_FABRICANTE_SEQ');
     runcommand('DROP SEQUENCE TDB2_PRODUTO_SEQ');
 END;
 
 -- Procedure que inseri alguns valores nas tabelas para testes
-CREATE OR REPLACE PROCEDURE load_data
+CREATE OR REPLACE PROCEDURE PR_DB1_LOAD_DATA
 AUTHID CURRENT_USER
 IS
     -- Fabricantes
@@ -198,24 +211,24 @@ BEGIN
 END;
 
 -- Procedure que inicia o ambiente com tabela, sequences e dados
-CREATE OR REPLACE PROCEDURE init_environment
+CREATE OR REPLACE PROCEDURE PR_DB1_INIT_ENVIRONMENT
 AUTHID CURRENT_USER
 IS
 BEGIN
-    create_tables;
-    create_sequences;
-    load_data;
+    PR_DB1_CREATE_TABLES;
+    PR_DB1_CREATE_SEQUENCES;
+    PR_DB1_LOAD_DATA;
 END;
 
 -- Procedure que reseta o ambiente e ja inicia outro com todas tabelas, sequences e dados pra teste
-CREATE OR REPLACE PROCEDURE reset_environment
+CREATE OR REPLACE PROCEDURE PR_DB1_RESET_ENVIRONMENT
 AUTHID CURRENT_USER
 IS
 BEGIN
-    drop_environment;
-    iniciar_ambiente;
+    PR_DB1_DROP_ENVIRONMENT;
+    PR_DB1_INIT_ENVIRONMENT;
 END;
 
 
--- EXEC reset_environment;
--- EXEC init_environment;
+-- EXEC PR_DB1_RESET_ENVIRONMENT;
+-- EXEC PR_DB1_INIT_ENVIRONMENT;
