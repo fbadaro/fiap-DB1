@@ -1,0 +1,93 @@
+-- Procedure para inserir na tabela de produto
+CREATE OR REPLACE PROCEDURE PR_DB1_INSERT_PRODUCT
+    (p_nome IN TDB2_PRODUTO.PO_NOME%TYPE,
+     p_descricao IN TDB2_PRODUTO.PO_DESCRICAO%TYPE,
+     p_codigo IN TDB2_PRODUTO.PO_CODIGO%TYPE,
+     p_numero IN TDB2_PRODUTO.PO_NUMERO_SERIE%TYPE,
+     p_peso_liq IN TDB2_PRODUTO.PO_PESO_LIQUIDO%TYPE,
+     p_peso_emb IN TDB2_PRODUTO.PO_PESO_EMBALAGEM%TYPE,
+     p_volume IN TDB2_PRODUTO.PO_VOLUME%TYPE,
+     p_dimensoes IN TDB2_PRODUTO.PO_DIMENSOES%TYPE,
+     p_ativo IN TDB2_PRODUTO.PO_ATIVO%TYPE,
+     p_origem IN TDB2_PRODUTO.PO_ORIGEM%TYPE,
+     p_tipo IN TDB2_PRODUTO.PO_TIPO%TYPE,
+     p_estoque IN TDB2_PRODUTO.PO_ESTOQUE%TYPE,
+     p_data_criacao IN TDB2_PRODUTO.PO_DATA_CRIACAO%TYPE,
+     p_data_att IN TDB2_PRODUTO.PO_DATA_ATUALIZACAO%TYPE DEFAULT NULL,
+     p_data_desat IN TDB2_PRODUTO.PO_DATA_DESATIVACAO%TYPE DEFAULT NULL,
+     p_valor IN TDB2_PRODUTO.PO_VALOR%TYPE,
+     p_fabricante_fk IN TDB2_PRODUTO.TDB1_FABRICANTE_FE_ID%TYPE)
+IS
+    PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+    INSERT INTO TDB2_PRODUTO 
+        VALUES (TDB2_PRODUTO_SEQ.NEXTVAL, p_nome, p_descricao, p_codigo, p_numero,
+                p_peso_liq, p_peso_emb, p_volume, p_dimensoes, p_ativo, p_origem,
+                p_tipo, p_estoque, p_data_criacao, p_data_att, p_data_desat, p_valor,
+                p_fabricante_fk);
+    COMMIT;    
+END;
+
+-- Procedure para atualizar tabela de produto, pode ser passado os parametros por posicao ou identificacao
+CREATE OR REPLACE PROCEDURE PR_DB1_UPDATE_PRODUCT
+    (p_id IN TDB2_PRODUTO.PO_ID%TYPE,
+     p_nome IN TDB2_PRODUTO.PO_NOME%TYPE DEFAULT NULL,
+     p_descricao IN TDB2_PRODUTO.PO_DESCRICAO%TYPE DEFAULT NULL,
+     p_codigo IN TDB2_PRODUTO.PO_CODIGO%TYPE DEFAULT NULL,
+     p_numero IN TDB2_PRODUTO.PO_NUMERO_SERIE%TYPE DEFAULT NULL,
+     p_peso_liq IN TDB2_PRODUTO.PO_PESO_LIQUIDO%TYPE DEFAULT NULL,
+     p_peso_emb IN TDB2_PRODUTO.PO_PESO_EMBALAGEM%TYPE DEFAULT NULL,
+     p_volume IN TDB2_PRODUTO.PO_VOLUME%TYPE DEFAULT NULL,
+     p_dimensoes IN TDB2_PRODUTO.PO_DIMENSOES%TYPE DEFAULT NULL,
+     p_ativo IN TDB2_PRODUTO.PO_ATIVO%TYPE DEFAULT NULL,
+     p_origem IN TDB2_PRODUTO.PO_ORIGEM%TYPE DEFAULT NULL,
+     p_tipo IN TDB2_PRODUTO.PO_TIPO%TYPE DEFAULT NULL,
+     p_estoque IN TDB2_PRODUTO.PO_ESTOQUE%TYPE DEFAULT NULL,
+     p_data_criacao IN TDB2_PRODUTO.PO_DATA_CRIACAO%TYPE DEFAULT NULL,
+     p_data_att IN TDB2_PRODUTO.PO_DATA_ATUALIZACAO%TYPE DEFAULT NULL,
+     p_data_desat IN TDB2_PRODUTO.PO_DATA_DESATIVACAO%TYPE DEFAULT NULL,
+     p_valor IN TDB2_PRODUTO.PO_VALOR%TYPE DEFAULT NULL,
+     p_fabricante_fk IN TDB2_PRODUTO.TDB1_FABRICANTE_FE_ID%TYPE DEFAULT NULL)
+IS
+    PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+    UPDATE TDB2_PRODUTO
+        SET PO_NOME = COALESCE(p_nome, PO_NOME),
+            PO_DESCRICAO = COALESCE(p_descricao, PO_DESCRICAO),
+            PO_CODIGO = COALESCE(p_codigo, PO_CODIGO),
+            PO_NUMERO_SERIE = COALESCE(p_numero, PO_NUMERO_SERIE),
+            PO_PESO_LIQUIDO = COALESCE(p_peso_liq, PO_PESO_LIQUIDO),
+            PO_PESO_EMBALAGEM = COALESCE(p_peso_emb, PO_PESO_EMBALAGEM),
+            PO_VOLUME = COALESCE(p_volume, PO_VOLUME),
+            PO_DIMENSOES = COALESCE(p_dimensoes, PO_DIMENSOES),
+            PO_ATIVO = COALESCE(p_ativo, PO_ATIVO),
+            PO_ORIGEM = COALESCE(p_origem, PO_ORIGEM),
+            PO_TIPO = COALESCE(p_tipo, PO_TIPO),
+            PO_ESTOQUE = COALESCE(p_estoque, PO_ESTOQUE),
+            PO_DATA_CRIACAO = COALESCE(p_data_criacao, PO_DATA_CRIACAO),
+            PO_DATA_ATUALIZACAO = COALESCE(p_data_att, PO_DATA_ATUALIZACAO),
+            PO_DATA_DESATIVACAO = COALESCE(p_data_desat, PO_DATA_DESATIVACAO),
+            PO_VALOR = COALESCE(p_valor, PO_VALOR),
+            TDB1_FABRICANTE_FE_ID = COALESCE(p_fabricante_fk, TDB1_FABRICANTE_FE_ID)
+    WHERE PO_ID = p_id;
+    COMMIT;
+END;
+
+-- Procedure para selecionar um produto pelo id
+CREATE OR REPLACE PROCEDURE PR_DB1_SELECT_PRODUCT
+(p_id IN TDB2_PRODUTO.PO_ID%TYPE)
+IS
+    p_produto SYS_REFCURSOR;
+BEGIN
+    OPEN p_produto FOR SELECT * FROM TDB2_PRODUTO WHERE PO_ID = p_id;
+    dbms_sql.return_result(p_produto);
+END
+
+-- Procedure para deletar um produto pelo id
+CREATE OR REPLACE PROCEDURE PR_DB1_DELETE_PRODUCT
+(p_id IN TDB2_PRODUTO.PO_ID%TYPE)
+IS
+BEGIN
+    DELETE FROM TDB2_PRODUTO
+    WHERE PO_ID = p_id;
+END;
