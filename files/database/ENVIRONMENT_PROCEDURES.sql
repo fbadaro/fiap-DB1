@@ -118,6 +118,7 @@ BEGIN
     runcommand('DROP TABLE TDB2_PRODUTO');
     runcommand('DROP TABLE TDB1_FABRICANTE');
     runcommand('DROP TABLE TDB3_LOG');
+    runcommand('DROP TABLE TDB4_NOTIF_PRODUTO');
     runcommand('DROP SEQUENCE TDB1_FABRICANTE_SEQ');
     runcommand('DROP SEQUENCE TDB2_PRODUTO_SEQ');
 END;

@@ -81,7 +81,7 @@ IS
 BEGIN
     OPEN p_produto FOR SELECT * FROM TDB2_PRODUTO WHERE PO_ID = p_id;
     dbms_sql.return_result(p_produto);
-END
+END;
 
 -- Procedure para deletar um produto pelo id
 CREATE OR REPLACE PROCEDURE PR_DB1_DELETE_PRODUCT
