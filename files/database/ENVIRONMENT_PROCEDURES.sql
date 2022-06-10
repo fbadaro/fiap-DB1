@@ -121,6 +121,7 @@ BEGIN
     runcommand('DROP TABLE TDB4_NOTIF_PRODUTO');
     runcommand('DROP SEQUENCE TDB1_FABRICANTE_SEQ');
     runcommand('DROP SEQUENCE TDB2_PRODUTO_SEQ');
+    runcommand('DROP SEQUENCE TDB4_NOTIF_PRODUTO_SEQ');
 END;
 
 -- Procedure que inicia o ambiente com tabela, sequences e dados
